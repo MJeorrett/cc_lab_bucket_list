@@ -5,6 +5,7 @@ var path = require('path');
 // var ACCOUNTS_FILE = path.join( __dirname + '/sample.json' );
 var MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
+var url = 'mongodb://localhost:27017/countriesBucketList';
 
 app.use( bodyParser.json() );
 
@@ -13,7 +14,6 @@ app.get('/', function (req, res) {
 });
 
 app.get( '/bucket-list-countries', function( req, res ) {
-  var url = 'mongodb://localhost:27017/countriesBucketList';
   MongoClient.connect(url, function(err, db){
     var countries = db.collection("countries");
     countries.find().toArray(function(err, docs){
@@ -24,7 +24,15 @@ app.get( '/bucket-list-countries', function( req, res ) {
 });
 
 app.post( '/bucket-list-countries', function( req, res ) {
-  console.log( "POST /bucket-list-countries hit" );
+  MongoClient.connect( url, function( err, db ) {
+    var countries = db.collection("countries");
+    countries.insert({
+      name: req.body.name,
+      alpha3Code: req.body.alpha3Code
+    });
+    res.status( 200 ).end();
+    db.close();
+  });
 });
 
 app.use(express.static('client/build'));
