@@ -13,7 +13,14 @@ app.get('/', function (req, res) {
 });
 
 app.get( '/bucket-list-countries', function( req, res ) {
-  console.log( "GET /bucket-list-countries hit" );
+  var url = 'mongodb://localhost:27017/countriesBucketList';
+  MongoClient.connect(url, function(err, db){
+    var countries = db.collection("countries");
+    countries.find().toArray(function(err, docs){
+      res.json(docs);
+      db.close();
+    });
+  })
 });
 
 app.post( '/bucket-list-countries', function( req, res ) {
