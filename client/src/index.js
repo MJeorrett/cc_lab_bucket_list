@@ -1,3 +1,5 @@
+var MasterView = require('./views/masterView'); 
+
 window.onload = function() {
   var url = "https://restcountries.eu/rest/v1/all";
   var request = new XMLHttpRequest();
@@ -9,7 +11,8 @@ window.onload = function() {
       var allCountryNames = allCountriesData.map( function( countryData ) {
         return countryData.name;
       });
-      console.log("allCountryNames:", allCountryNames);
+      var masterView = new MasterView(allCountryNames, null);
+      masterView.populateSelect();
     }
   };
   request.send();
